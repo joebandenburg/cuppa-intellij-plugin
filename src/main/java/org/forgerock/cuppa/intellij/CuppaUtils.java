@@ -24,7 +24,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 /**
  * Utility functions for integrating with IntelliJ's APIs.
  */
-final class CuppaUtils {
+public final class CuppaUtils {
     private static final String TEST_ANNOTATION_FQCN = "org.forgerock.cuppa.Test";
 
     private CuppaUtils() {
@@ -36,7 +36,7 @@ final class CuppaUtils {
      * @param psiElement The PSI element.
      * @return true if the given element is nested in a Cuppa test class and false otherwise.
      */
-    static boolean isCuppaClass(PsiElement psiElement) {
+    public static boolean isCuppaClass(PsiElement psiElement) {
         PsiClass psiClass = PsiTreeUtil.getParentOfType(psiElement, PsiClass.class, false);
         return psiClass != null && AnnotationUtil.isAnnotated(psiClass, TEST_ANNOTATION_FQCN, true);
     }

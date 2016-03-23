@@ -28,5 +28,10 @@
         <deadCode implementation="org.forgerock.cuppa.intellij.CuppaEntryPoint"/>
         <defaultLiveTemplatesProvider implementation="org.forgerock.cuppa.intellij.CuppaLiveTemplatesProvider"/>
         <liveTemplateContext implementation="org.forgerock.cuppa.intellij.CuppaLiveTemplateContext"/>
+        <intentionAction>
+            <bundleName>org.forgerock.cuppa.intellij.intentions.CuppaIntentionsBundle</bundleName>
+            <categoryKey>intention.category</categoryKey>
+            <className>org.forgerock.cuppa.intellij.intentions.AddTestImplementationIntention</className>
+        </intentionAction>
     </extensions>
 </idea-plugin>
