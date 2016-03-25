@@ -28,5 +28,7 @@
         <deadCode implementation="org.forgerock.cuppa.intellij.CuppaEntryPoint"/>
         <defaultLiveTemplatesProvider implementation="org.forgerock.cuppa.intellij.CuppaLiveTemplatesProvider"/>
         <liveTemplateContext implementation="org.forgerock.cuppa.intellij.CuppaLiveTemplateContext"/>
+
+        <configurationType implementation="org.forgerock.cuppa.intellij.configuration.CuppaConfigurationType"/>
     </extensions>
 </idea-plugin>
