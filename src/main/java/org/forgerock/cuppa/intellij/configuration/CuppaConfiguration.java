@@ -28,7 +28,9 @@ import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.options.SettingsEditorGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.JDOMExternalizerUtil;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.listeners.RefactoringElementListener;
 import org.jdom.Element;
@@ -194,18 +196,20 @@ public class CuppaConfiguration extends JavaTestConfigurationBase {
         writeModule(element);
         JavaRunConfigurationExtensionManager.getInstance().writeExternal(this, element);
         EnvironmentVariablesComponent.writeExternal(element, environmentVariables);
-        if (vmParameters != null) {
-            element.setAttribute(VM_PARAMETERS, vmParameters);
+        if (StringUtil.isNotEmpty(vmParameters)) {
+            JDOMExternalizerUtil.addElementWithValueAttribute(element, VM_PARAMETERS, vmParameters);
         }
-        if (programParameters != null) {
-            element.setAttribute(PROGRAM_PARAMETERS, programParameters);
+        if (StringUtil.isNotEmpty(programParameters)) {
+            JDOMExternalizerUtil.addElementWithValueAttribute(element, PROGRAM_PARAMETERS, programParameters);
         }
-        if (workingDirectory != null) {
-            element.setAttribute(WORKING_DIRECTORY, workingDirectory);
+        if (StringUtil.isNotEmpty(workingDirectory)) {
+            JDOMExternalizerUtil.addElementWithValueAttribute(element, WORKING_DIRECTORY, workingDirectory);
         }
-        element.setAttribute(IS_ALTERNATIVE_JRE_PATH_ENABLED, Boolean.toString(isAlternativeJrePathEnabled));
-        if (alternativeJrePath != null) {
-            element.setAttribute(ALTERNATIVE_JRE_PATH, alternativeJrePath);
+        if (isAlternativeJrePathEnabled) {
+            JDOMExternalizerUtil.addElementWithValueAttribute(element, IS_ALTERNATIVE_JRE_PATH_ENABLED, "true");
+        }
+        if (StringUtil.isNotEmpty(alternativeJrePath)) {
+            JDOMExternalizerUtil.addElementWithValueAttribute(element, ALTERNATIVE_JRE_PATH, alternativeJrePath);
         }
     }
 
@@ -215,10 +219,11 @@ public class CuppaConfiguration extends JavaTestConfigurationBase {
         readModule(element);
         JavaRunConfigurationExtensionManager.getInstance().readExternal(this, element);
         EnvironmentVariablesComponent.readExternal(element, environmentVariables);
-        vmParameters = element.getAttributeValue(VM_PARAMETERS);
-        programParameters = element.getAttributeValue(PROGRAM_PARAMETERS);
-        workingDirectory = element.getAttributeValue(WORKING_DIRECTORY);
-        isAlternativeJrePathEnabled = Boolean.parseBoolean(element.getAttributeValue(IS_ALTERNATIVE_JRE_PATH_ENABLED));
-        alternativeJrePath = element.getAttributeValue(ALTERNATIVE_JRE_PATH);
+        vmParameters = JDOMExternalizerUtil.getFirstChildValueAttribute(element, VM_PARAMETERS);
+        programParameters = JDOMExternalizerUtil.getFirstChildValueAttribute(element, PROGRAM_PARAMETERS);
+        workingDirectory = JDOMExternalizerUtil.getFirstChildValueAttribute(element, WORKING_DIRECTORY);
+        isAlternativeJrePathEnabled = Boolean.parseBoolean(
+                JDOMExternalizerUtil.getFirstChildValueAttribute(element, IS_ALTERNATIVE_JRE_PATH_ENABLED));
+        alternativeJrePath = JDOMExternalizerUtil.getFirstChildValueAttribute(element, ALTERNATIVE_JRE_PATH);
     }
 }
