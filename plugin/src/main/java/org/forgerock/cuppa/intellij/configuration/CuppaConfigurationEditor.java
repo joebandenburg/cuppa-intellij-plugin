@@ -12,9 +12,15 @@ import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.ui.PanelWithAnchor;
+import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * The UI panel to allow the user to edit the settings of a Cuppa configuration.
+ *
+ * @param <T>
+ */
 public class CuppaConfigurationEditor<T extends CuppaConfiguration> extends SettingsEditor<T>
         implements PanelWithAnchor {
     private JPanel panel;
@@ -32,6 +38,8 @@ public class CuppaConfigurationEditor<T extends CuppaConfiguration> extends Sett
             commonJavaParameters.setModuleContext(moduleSelector.getModule());
         });
         commonJavaParameters.setHasModuleMacro();
+
+        UIUtil.setEnabled(commonJavaParameters.getProgramParametersComponent(), false, true);
 
         jrePathEditor.setAnchor(moduleClasspath.getLabel());
         commonJavaParameters.setAnchor(moduleClasspath.getLabel());

@@ -152,7 +152,7 @@ public class CuppaConfiguration extends JavaTestConfigurationBase {
 
     @Override
     public Collection<Module> getValidModules() {
-        return Arrays.asList(ModuleManager.getInstance(getProject()).getModules());
+        return getAllModules();
     }
 
     @Nullable
@@ -166,6 +166,7 @@ public class CuppaConfiguration extends JavaTestConfigurationBase {
         JavaRunConfigurationExtensionManager.checkConfigurationIsValid(this);
         ProgramParametersUtil.checkWorkingDirectoryExist(this, getProject(), getConfigurationModule().getModule());
         JavaParametersUtil.checkAlternativeJRE(this);
+        getConfigurationModule().checkForWarning();
     }
 
     @NotNull
@@ -182,7 +183,7 @@ public class CuppaConfiguration extends JavaTestConfigurationBase {
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) throws ExecutionException {
-        return null;
+        return new CuppaRunState(this, environment);
     }
 
     @Override

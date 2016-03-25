@@ -5,7 +5,9 @@ import javax.swing.*;
 import com.intellij.execution.configuration.ConfigurationFactoryEx;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
+import com.intellij.execution.configurations.ModuleBasedConfiguration;
 import com.intellij.execution.configurations.RunConfiguration;
+import com.intellij.execution.configurations.RunConfigurationModule;
 import com.intellij.openapi.project.Project;
 import org.forgerock.cuppa.intellij.CuppaIcons;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +24,11 @@ public class CuppaConfigurationType implements ConfigurationType {
             @Override
             public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
                 return new CuppaConfiguration("", project, this);
+            }
+
+            @Override
+            public void onNewConfigurationCreated(@NotNull RunConfiguration configuration) {
+                ((ModuleBasedConfiguration) configuration).onNewConfigurationCreated();
             }
         };
     }

@@ -16,16 +16,26 @@
 
 package org.forgerock.cuppa.intellij;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.intellij.codeInsight.AnnotationUtil;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.searches.AnnotatedElementsSearch;
+import com.intellij.psi.search.searches.AnnotatedPackagesSearch;
+import com.intellij.psi.search.searches.AnnotationTargetsSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * Utility functions for integrating with IntelliJ's APIs.
  */
-final class CuppaUtils {
-    private static final String TEST_ANNOTATION_FQCN = "org.forgerock.cuppa.Test";
+public final class CuppaUtils {
+    public static final String TEST_ANNOTATION_FQCN = "org.forgerock.cuppa.Test";
 
     private CuppaUtils() {
     }
@@ -36,8 +46,18 @@ final class CuppaUtils {
      * @param psiElement The PSI element.
      * @return true if the given element is nested in a Cuppa test class and false otherwise.
      */
-    static boolean isCuppaClass(PsiElement psiElement) {
+    public static boolean isCuppaClass(PsiElement psiElement) {
         PsiClass psiClass = PsiTreeUtil.getParentOfType(psiElement, PsiClass.class, false);
         return psiClass != null && AnnotationUtil.isAnnotated(psiClass, TEST_ANNOTATION_FQCN, true);
+    }
+
+    public static List<PsiClass> findTestClasses(Module module) {
+        return AnnotatedElementsSearch.searchPsiClasses(getTestAnnotationClass(module.getProject()),
+                GlobalSearchScope.moduleScope(module)).findAll().stream()
+                .collect(Collectors.toList());
+    }
+
+    private static PsiClass getTestAnnotationClass(Project project) {
+        return JavaPsiFacade.getInstance(project).findClass(TEST_ANNOTATION_FQCN, GlobalSearchScope.allScope(project));
     }
 }

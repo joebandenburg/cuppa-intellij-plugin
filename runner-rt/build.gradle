@@ -1,0 +1,3 @@
+dependencies {
+    compile group: 'org.forgerock.cuppa', name: 'cuppa', version: '1.0.0', transitive: false
+}
