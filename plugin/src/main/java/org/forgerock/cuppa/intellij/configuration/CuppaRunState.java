@@ -3,6 +3,7 @@ package org.forgerock.cuppa.intellij.configuration;
 import static org.forgerock.cuppa.intellij.CuppaUtils.TEST_ANNOTATION_FQCN;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,12 +95,29 @@ public class CuppaRunState extends JavaTestFrameworkRunnableState<CuppaConfigura
     @Override
     protected JavaParameters createJavaParameters() throws ExecutionException {
         JavaParameters parameters = super.createJavaParameters();
-        Module module = configuration.getConfigurationModule().getModule();
         parameters.setMainClass(CuppaRunner.class.getName());
-        List<String> testClassNames = CuppaUtils.findTestClasses(module).stream()
-                .map(PsiClass::getQualifiedName)
-                .collect(Collectors.toList());
+        List<String> testClassNames = getTestClassNames();
         parameters.getProgramParametersList().addAll(testClassNames);
         return parameters;
+    }
+
+    private List<String> getTestClassNames() {
+        switch (configuration.getSearchScope()) {
+            case PROJECT:
+                return getClassNames(CuppaUtils.findTestClasses(configuration.getProject()));
+            case MODULE:
+                return getClassNames(CuppaUtils.findTestClasses(configuration.getConfigurationModule().getModule()));
+            case PACKAGE:
+                return getClassNames(CuppaUtils.findTestClasses(JavaPsiFacade.getInstance(configuration.getProject()).findPackage(configuration.getSearchPackage())));
+            case CLASS:
+                return Collections.singletonList(configuration.getSearchClass());
+        }
+        throw new IllegalStateException("Invalid search scope");
+    }
+
+    private List<String> getClassNames(List<PsiClass> classes) {
+        return classes.stream()
+                .map(PsiClass::getQualifiedName)
+                .collect(Collectors.toList());
     }
 }

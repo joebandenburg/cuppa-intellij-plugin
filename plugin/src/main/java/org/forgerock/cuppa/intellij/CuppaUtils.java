@@ -25,7 +25,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPackage;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PackageScope;
+import com.intellij.psi.search.scope.packageSet.NamedScope;
 import com.intellij.psi.search.searches.AnnotatedElementsSearch;
 import com.intellij.psi.search.searches.AnnotatedPackagesSearch;
 import com.intellij.psi.search.searches.AnnotationTargetsSearch;
@@ -51,9 +54,21 @@ public final class CuppaUtils {
         return psiClass != null && AnnotationUtil.isAnnotated(psiClass, TEST_ANNOTATION_FQCN, true);
     }
 
+    public static List<PsiClass> findTestClasses(Project project) {
+        return AnnotatedElementsSearch.searchPsiClasses(getTestAnnotationClass(project),
+                GlobalSearchScope.projectScope(project)).findAll().stream()
+                .collect(Collectors.toList());
+    }
+
     public static List<PsiClass> findTestClasses(Module module) {
         return AnnotatedElementsSearch.searchPsiClasses(getTestAnnotationClass(module.getProject()),
                 GlobalSearchScope.moduleScope(module)).findAll().stream()
+                .collect(Collectors.toList());
+    }
+
+    public static List<PsiClass> findTestClasses(PsiPackage psiPackage) {
+        return AnnotatedElementsSearch.searchPsiClasses(getTestAnnotationClass(psiPackage.getProject()),
+                new PackageScope(psiPackage, true, false)).findAll().stream()
                 .collect(Collectors.toList());
     }
 
